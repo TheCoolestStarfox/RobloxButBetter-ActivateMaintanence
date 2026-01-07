@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>RobloxButBetter — Maintenance Control</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, sans-serif;
+            background: #111827;
+            color: #e5e7eb;
+        }
+
+        .panel {
+            background: #1f2937;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid #374151;
+            text-align: center;
+            width: 320px;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #374151;
+            background: #111827;
+            color: #e5e7eb;
+            margin-top: 0.5rem;
+        }
+
+        .button {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            width: 100%;
+        }
+
+        .error {
+            color: #f87171;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-panel {
+            background: #1f2937;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            border: 1px solid #374151;
+            text-align: center;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .confirm-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .confirm-yes {
+            background: #16a34a;
+            color: white;
+        }
+
+        .confirm-no {
+            background: #374151;
+            color: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PASSWORD PANEL -->
+    <div class="panel" id="passwordPanel">
+        <h2>Admin Login</h2>
+        <p>Enter the admin password to continue.</p>
+        <input type="password" id="passwordInput" placeholder="Password" />
+        <button class="button" id="passwordSubmit">Enter</button>
+        <div class="error" id="passwordError" style="display:none;">Incorrect password</div>
+    </div>
+
+    <!-- MAIN BUTTON (hidden until password is correct) -->
+    <button class="button" id="openConfirm" style="display:none;">
+        Activate Maintenance Mode
+    </button>
+
+    <!-- CONFIRMATION PANEL -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-panel">
+            <h2>Activate Maintenance Mode?</h2>
+            <p>This will put RobloxButBetter into maintenance mode.</p>
+
+            <div class="confirm-actions">
+                <button class="confirm-button confirm-yes" id="confirmYes">Yes</button>
+                <button class="confirm-button confirm-no" id="confirmNo">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CHANGE THIS PASSWORD
+        const ADMIN_PASSWORD = "yourpasswordhere";
+
+        const passwordPanel = document.getElementById("passwordPanel");
+        const passwordInput = document.getElementById("passwordInput");
+        const passwordSubmit = document.getElementById("passwordSubmit");
+        const passwordError = document.getElementById("passwordError");
+
+        const openBtn = document.getElementById("openConfirm");
+        const overlay = document.getElementById("confirmOverlay");
+        const yesBtn = document.getElementById("confirmYes");
+        const noBtn = document.getElementById("confirmNo");
+
+        // Password check
+        passwordSubmit.onclick = () => {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                passwordPanel.style.display = "none";
+                openBtn.style.display = "block";
+            } else {
+                passwordError.style.display = "block";
+            }
+        };
+
+        // Open confirmation
+        openBtn.onclick = () => overlay.style.display = "flex";
+
+        // Close confirmation
+        noBtn.onclick = () => overlay.style.display = "none";
+
+        // Activate maintenance
+        yesBtn.onclick = () => {
+            overlay.style.display = "none";
+            document.body.innerHTML = `
+                <div style="text-align:center; margin-top:20vh;">
+                    <h1 style="font-size:2.5rem;">🔧 Maintenance Mode Active</h1>
+                    <p style="font-size:1.2rem; color:#9ca3af;">
+                        RobloxButBetter is currently undergoing maintenance.
+                    </p>
+                </div>
+            `;
+        };
+    </script>
+
+</body>
+</html>
