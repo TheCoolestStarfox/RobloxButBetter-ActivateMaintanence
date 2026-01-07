@@ -158,6 +158,41 @@
         const noBtn = document.getElementById("confirmNo");
 
         /* ============================
+           GITHUB UPDATE FUNCTION
+           ============================ */
+        async function updateMaintenanceFile(newState, newCode) {
+            const token = "YOUR_NEW_TOKEN_HERE"; 
+            const username = "YOUR_GITHUB_USERNAME";
+            const repo = "RobloxButBetter-ActivateMaintanence";
+            const filePath = "maintenance.json";
+
+            const url = `https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
+
+            // Get current file SHA
+            const current = await fetch(url).then(r => r.json());
+
+            const newContent = {
+                maintenance: newState,
+                code: newCode
+            };
+
+            const encoded = btoa(JSON.stringify(newContent, null, 2));
+
+            await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "Update maintenance state",
+                    content: encoded,
+                    sha: current.sha
+                })
+            });
+        }
+
+        /* ============================
            LOGIN LOGIC
            ============================ */
         loginSubmit.onclick = () => {
@@ -209,6 +244,13 @@
             // Toggle maintenance state
             maintenanceActive = !maintenanceActive;
             updateToggleButton();
+
+            // Send update to GitHub
+            if (maintenanceActive) {
+                updateMaintenanceFile(true, "MAINT_ON");
+            } else {
+                updateMaintenanceFile(false, "MAINT_OFF");
+            }
         };
     </script>
 
