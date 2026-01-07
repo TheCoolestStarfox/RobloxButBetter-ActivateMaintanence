@@ -111,15 +111,15 @@
     </div>
 
     <!-- MAIN BUTTON (hidden until login succeeds) -->
-    <button class="button" id="openConfirm" style="display:none;">
-        Activate Maintenance Mode
+    <button class="button" id="toggleButton" style="display:none;">
+        Turn ON Maintenance Mode
     </button>
 
     <!-- CONFIRMATION PANEL -->
     <div class="confirm-overlay" id="confirmOverlay">
         <div class="confirm-panel">
-            <h2>Activate Maintenance Mode?</h2>
-            <p>This will put RobloxButBetter into maintenance mode.</p>
+            <h2 id="confirmTitle">Confirm Action</h2>
+            <p id="confirmText">Are you sure?</p>
 
             <div class="confirm-actions">
                 <button class="confirm-button confirm-yes" id="confirmYes">Yes</button>
@@ -130,10 +130,15 @@
 
     <script>
         /* ============================
-           ADMIN CREDENTIALS (EDIT THESE)
+           ADMIN CREDENTIALS
            ============================ */
-        const ADMIN_USERNAME = "Roblox_Gaming2683";
-        const ADMIN_PASSWORD = "Roblox-2683";
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "password123";
+
+        /* ============================
+           STATE
+           ============================ */
+        let maintenanceActive = false;
 
         /* ============================
            ELEMENTS
@@ -144,8 +149,11 @@
         const loginSubmit = document.getElementById("loginSubmit");
         const loginError = document.getElementById("loginError");
 
-        const openBtn = document.getElementById("openConfirm");
+        const toggleButton = document.getElementById("toggleButton");
+
         const overlay = document.getElementById("confirmOverlay");
+        const confirmTitle = document.getElementById("confirmTitle");
+        const confirmText = document.getElementById("confirmText");
         const yesBtn = document.getElementById("confirmYes");
         const noBtn = document.getElementById("confirmNo");
 
@@ -153,34 +161,54 @@
            LOGIN LOGIC
            ============================ */
         loginSubmit.onclick = () => {
-            const user = usernameInput.value.trim();
-            const pass = passwordInput.value;
-
-            if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+            if (
+                usernameInput.value.trim() === ADMIN_USERNAME &&
+                passwordInput.value === ADMIN_PASSWORD
+            ) {
                 loginPanel.style.display = "none";
-                openBtn.style.display = "block";
+                toggleButton.style.display = "block";
             } else {
                 loginError.style.display = "block";
             }
         };
 
         /* ============================
+           UPDATE BUTTON TEXT
+           ============================ */
+        function updateToggleButton() {
+            toggleButton.textContent = maintenanceActive
+                ? "Turn OFF Maintenance Mode"
+                : "Turn ON Maintenance Mode";
+        }
+
+        updateToggleButton();
+
+        /* ============================
+           OPEN CONFIRMATION PANEL
+           ============================ */
+        toggleButton.onclick = () => {
+            if (maintenanceActive) {
+                confirmTitle.textContent = "Turn OFF Maintenance Mode?";
+                confirmText.textContent = "Players will be able to join again.";
+            } else {
+                confirmTitle.textContent = "Turn ON Maintenance Mode?";
+                confirmText.textContent = "Players will be kicked and blocked.";
+            }
+
+            overlay.style.display = "flex";
+        };
+
+        /* ============================
            CONFIRMATION LOGIC
            ============================ */
-        openBtn.onclick = () => overlay.style.display = "flex";
         noBtn.onclick = () => overlay.style.display = "none";
 
         yesBtn.onclick = () => {
             overlay.style.display = "none";
 
-            document.body.innerHTML = `
-                <div style="text-align:center; margin-top:20vh;">
-                    <h1 style="font-size:2.5rem;">🔧 Maintenance Mode Active</h1>
-                    <p style="font-size:1.2rem; color:#9ca3af;">
-                        RobloxButBetter is currently undergoing maintenance.
-                    </p>
-                </div>
-            `;
+            // Toggle maintenance state
+            maintenanceActive = !maintenanceActive;
+            updateToggleButton();
         };
     </script>
 
